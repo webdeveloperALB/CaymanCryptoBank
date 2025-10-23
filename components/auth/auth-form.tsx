@@ -431,7 +431,7 @@ export default function AuthForm() {
                 <div className="max-w-md mx-auto w-full">
                   <div className="mb-6 sm:mb-8">
                     <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-                      Create your Lithuanian Crypto Central Bank Account
+                      Create your Cayman Crypto Bank Account
                     </h2>
                     <p className="text-gray-600 text-sm">
                       Apply now and you will get access to your account within
