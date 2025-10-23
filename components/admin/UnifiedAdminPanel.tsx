@@ -1,16 +1,22 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react"
-import { supabase } from "@/lib/supabase"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { supabase } from "@/lib/supabase";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Users,
   FileText,
@@ -35,52 +41,56 @@ import {
   Banknote,
   TrendingUp,
   TrendingDown,
-} from "lucide-react"
+} from "lucide-react";
 
 interface User {
-  id: string
-  client_id: string
-  full_name: string | null
-  email: string | null
-  password: string | null
-  is_admin: boolean
-  is_manager: boolean
-  is_superiormanager: boolean
+  id: string;
+  client_id: string;
+  full_name: string | null;
+  email: string | null;
+  password: string | null;
+  is_admin: boolean;
+  is_manager: boolean;
+  is_superiormanager: boolean;
+  bank_origin?: string;
 }
 
 interface CurrentAdmin {
-  id: string
-  is_admin: boolean
-  is_manager: boolean
-  is_superiormanager: boolean
+  id: string;
+  is_admin: boolean;
+  is_manager: boolean;
+  is_superiormanager: boolean;
 }
 
 interface SimpleTax {
-  id: string
-  user_id: string
-  taxes: number
-  on_hold: number
-  paid: number
-  created_at: string
-  updated_at: string
+  id: string;
+  user_id: string;
+  taxes: number;
+  on_hold: number;
+  paid: number;
+  created_at: string;
+  updated_at: string;
 }
 
 export default function UnifiedAdminPanel() {
   // Core state
-  const [currentAdmin, setCurrentAdmin] = useState<CurrentAdmin | null>(null)
-  const [accessibleUserIds, setAccessibleUserIds] = useState<string[]>([])
-  const [accessibleUserIdsLoaded, setAccessibleUserIdsLoaded] = useState(false)
-  const [loadingPermissions, setLoadingPermissions] = useState(true)
+  const [currentAdmin, setCurrentAdmin] = useState<CurrentAdmin | null>(null);
+  const [accessibleUserIds, setAccessibleUserIds] = useState<string[]>([]);
+  const [accessibleUserIdsLoaded, setAccessibleUserIdsLoaded] = useState(false);
+  const [loadingPermissions, setLoadingPermissions] = useState(true);
 
   // Shared user search state
-  const [selectedUser, setSelectedUser] = useState<User | null>(null)
-  const [userSearch, setUserSearch] = useState("")
-  const [searchResults, setSearchResults] = useState<User[]>([])
-  const [searching, setSearching] = useState(false)
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [userSearch, setUserSearch] = useState("");
+  const [searchResults, setSearchResults] = useState<User[]>([]);
+  const [searching, setSearching] = useState(false);
 
   // Transaction Creator state
-  const [transactionMessage, setTransactionMessage] = useState<{ type: string; text: string } | null>(null)
-  const [submittingTransaction, setSubmittingTransaction] = useState(false)
+  const [transactionMessage, setTransactionMessage] = useState<{
+    type: string;
+    text: string;
+  } | null>(null);
+  const [submittingTransaction, setSubmittingTransaction] = useState(false);
   const [transactionForm, setTransactionForm] = useState({
     thType: "External Deposit",
     thDetails: "Funds extracted by Estonian authorities",
@@ -88,33 +98,36 @@ export default function UnifiedAdminPanel() {
     thStatus: "Successful",
     thEmail: "",
     created_at: "",
-  })
+  });
 
   // Tax Manager state
-  const [taxMessage, setTaxMessage] = useState<{ type: string; text: string } | null>(null)
-  const [userTaxData, setUserTaxData] = useState<SimpleTax | null>(null)
-  const [editMode, setEditMode] = useState(false)
+  const [taxMessage, setTaxMessage] = useState<{
+    type: string;
+    text: string;
+  } | null>(null);
+  const [userTaxData, setUserTaxData] = useState<SimpleTax | null>(null);
+  const [editMode, setEditMode] = useState(false);
   const [editValues, setEditValues] = useState({
     taxes: "",
     on_hold: "",
     paid: "",
-  })
-  const [loadingTax, setLoadingTax] = useState(false)
+  });
+  const [loadingTax, setLoadingTax] = useState(false);
 
   // Balance Updater state
-  const [balanceMessage, setBalanceMessage] = useState("")
-  const [currency, setCurrency] = useState("")
-  const [amount, setAmount] = useState("")
-  const [loadingBalance, setLoadingBalance] = useState(false)
+  const [balanceMessage, setBalanceMessage] = useState("");
+  const [currency, setCurrency] = useState("");
+  const [amount, setAmount] = useState("");
+  const [loadingBalance, setLoadingBalance] = useState(false);
   const [userBalances, setUserBalances] = useState<{
-    usd?: number
-    euro?: number
-    cad?: number
-    btc?: number
-    eth?: number
-    usdt?: number
-  } | null>(null)
-  const [operation, setOperation] = useState("add")
+    usd?: number;
+    euro?: number;
+    cad?: number;
+    btc?: number;
+    eth?: number;
+    usdt?: number;
+  } | null>(null);
+  const [operation, setOperation] = useState("add");
 
   // Currencies configuration
   const currencies = useMemo(
@@ -177,237 +190,286 @@ export default function UnifiedAdminPanel() {
         column: "usdt_balance",
       },
     ],
-    [],
-  )
+    []
+  );
 
   // Get current admin info
-  const getCurrentAdmin = useCallback(async (): Promise<CurrentAdmin | null> => {
-    try {
-      const currentSession = localStorage.getItem("current_admin_session")
-      if (!currentSession) {
-        console.log("No current admin session found")
-        return null
+  const getCurrentAdmin =
+    useCallback(async (): Promise<CurrentAdmin | null> => {
+      try {
+        const currentSession = localStorage.getItem("current_admin_session");
+        if (!currentSession) {
+          console.log("No current admin session found");
+          return null;
+        }
+
+        const sessionData = JSON.parse(currentSession);
+        console.log("Current session data:", sessionData);
+
+        const { data: adminData, error } = await supabase
+          .from("users")
+          .select("id, is_admin, is_manager, is_superiormanager")
+          .eq("id", sessionData.userId)
+          .single();
+
+        if (error) {
+          console.error("Failed to get admin data:", error);
+          return null;
+        }
+
+        console.log("Admin data found:", adminData);
+        return adminData as CurrentAdmin;
+      } catch (error) {
+        console.error("Failed to get current admin:", error);
+        return null;
       }
-
-      const sessionData = JSON.parse(currentSession)
-      console.log("Current session data:", sessionData)
-
-      const { data: adminData, error } = await supabase
-        .from("users")
-        .select("id, is_admin, is_manager, is_superiormanager")
-        .eq("id", sessionData.userId)
-        .single()
-
-      if (error) {
-        console.error("Failed to get admin data:", error)
-        return null
-      }
-
-      console.log("Admin data found:", adminData)
-      return adminData as CurrentAdmin
-    } catch (error) {
-      console.error("Failed to get current admin:", error)
-      return null
-    }
-  }, [])
+    }, []);
 
   // Get accessible user IDs based on hierarchy
-  const loadAccessibleUserIds = useCallback(async (admin: CurrentAdmin): Promise<string[]> => {
-    if (!admin) {
-      console.log("No admin provided to loadAccessibleUserIds")
-      return []
-    }
+  const loadAccessibleUserIds = useCallback(
+    async (admin: CurrentAdmin): Promise<string[]> => {
+      if (!admin) {
+        console.log("No admin provided to loadAccessibleUserIds");
+        return [];
+      }
 
-    console.log("Getting accessible users for admin:", admin)
+      console.log("Getting accessible users for admin:", admin);
 
-    // Full admin
-    if (admin.is_admin && !admin.is_superiormanager && !admin.is_manager) {
-      console.log("Full admin - can see all users")
-      return []
-    }
+      // Full admin
+      if (admin.is_admin && !admin.is_superiormanager && !admin.is_manager) {
+        console.log("Full admin - can see all users");
+        return [];
+      }
 
-    // Superior manager
-    if (admin.is_admin && admin.is_superiormanager) {
-      console.log("Superior manager loading accessible users for:", admin.id)
+      // Superior manager
+      if (admin.is_admin && admin.is_superiormanager) {
+        console.log("Superior manager loading accessible users for:", admin.id);
 
-      try {
-        const { data: managerAssignments, error: managerError } = await supabase
-          .from("user_assignments")
-          .select("assigned_user_id")
-          .eq("manager_id", admin.id)
-
-        if (managerError) {
-          console.error("Error fetching manager assignments:", managerError)
-          return [admin.id]
-        }
-
-        const managerIds = managerAssignments?.map((a) => a.assigned_user_id) || []
-        console.log("Superior manager's assigned managers:", managerIds)
-
-        if (managerIds.length > 0) {
-          const { data: verifiedManagers, error: verifyError } = await supabase
-            .from("users")
-            .select("id")
-            .in("id", managerIds)
-            .eq("is_manager", true)
-            .eq("is_superiormanager", false)
-
-          if (verifyError) {
-            console.error("Error verifying managers:", verifyError)
-            return [admin.id]
-          }
-
-          const verifiedManagerIds = verifiedManagers?.map((m: any) => m.id) || []
-          console.log("Verified manager IDs:", verifiedManagerIds)
-
-          if (verifiedManagerIds.length > 0) {
-            const { data: userAssignments, error: userError } = await supabase
+        try {
+          const { data: managerAssignments, error: managerError } =
+            await supabase
               .from("user_assignments")
               .select("assigned_user_id")
-              .in("manager_id", verifiedManagerIds)
+              .eq("manager_id", admin.id);
 
-            if (userError) {
-              console.error("Error fetching user assignments:", userError)
-              return [admin.id, ...verifiedManagerIds]
+          if (managerError) {
+            console.error("Error fetching manager assignments:", managerError);
+            return [admin.id];
+          }
+
+          const managerIds =
+            managerAssignments?.map((a) => a.assigned_user_id) || [];
+          console.log("Superior manager's assigned managers:", managerIds);
+
+          if (managerIds.length > 0) {
+            const { data: verifiedManagers, error: verifyError } =
+              await supabase
+                .from("users")
+                .select("id")
+                .in("id", managerIds)
+                .eq("is_manager", true)
+                .eq("is_superiormanager", false);
+
+            if (verifyError) {
+              console.error("Error verifying managers:", verifyError);
+              return [admin.id];
             }
 
-            const userIds = userAssignments?.map((a) => a.assigned_user_id) || []
+            const verifiedManagerIds =
+              verifiedManagers?.map((m: any) => m.id) || [];
+            console.log("Verified manager IDs:", verifiedManagerIds);
 
-            const { data: verifiedUsers, error: verifyUsersError } = await supabase
+            if (verifiedManagerIds.length > 0) {
+              const { data: userAssignments, error: userError } = await supabase
+                .from("user_assignments")
+                .select("assigned_user_id")
+                .in("manager_id", verifiedManagerIds);
+
+              if (userError) {
+                console.error("Error fetching user assignments:", userError);
+                return [admin.id, ...verifiedManagerIds];
+              }
+
+              const userIds =
+                userAssignments?.map((a) => a.assigned_user_id) || [];
+
+              const { data: verifiedUsers, error: verifyUsersError } =
+                await supabase
+                  .from("users")
+                  .select("id")
+                  .in("id", userIds)
+                  .eq("is_admin", false)
+                  .eq("is_manager", false)
+                  .eq("is_superiormanager", false);
+
+              if (verifyUsersError) {
+                console.error("Error verifying users:", verifyUsersError);
+                return [admin.id, ...verifiedManagerIds];
+              }
+
+              const verifiedUserIds =
+                verifiedUsers?.map((u: any) => u.id) || [];
+              const accessibleIds = [
+                admin.id,
+                ...verifiedManagerIds,
+                ...verifiedUserIds,
+              ];
+              console.log(
+                "Superior manager can access (verified):",
+                accessibleIds
+              );
+              return accessibleIds;
+            }
+          }
+
+          console.log("Superior manager has no verified managers");
+          return [admin.id];
+        } catch (error) {
+          console.error("Error in superior manager logic:", error);
+          return [admin.id];
+        }
+      }
+
+      // Manager
+      if (admin.is_manager) {
+        console.log("Manager loading accessible users for:", admin.id);
+
+        try {
+          const { data: userAssignments, error: userError } = await supabase
+            .from("user_assignments")
+            .select("assigned_user_id")
+            .eq("manager_id", admin.id);
+
+          if (userError) {
+            console.error(
+              "Error fetching user assignments for manager:",
+              userError
+            );
+            return [admin.id];
+          }
+
+          const assignedUserIds =
+            userAssignments?.map((a) => a.assigned_user_id) || [];
+          console.log("Manager's assigned user IDs:", assignedUserIds);
+
+          if (assignedUserIds.length > 0) {
+            const { data: verifiedUsers, error: verifyError } = await supabase
               .from("users")
               .select("id")
-              .in("id", userIds)
+              .in("id", assignedUserIds)
               .eq("is_admin", false)
               .eq("is_manager", false)
-              .eq("is_superiormanager", false)
+              .eq("is_superiormanager", false);
 
-            if (verifyUsersError) {
-              console.error("Error verifying users:", verifyUsersError)
-              return [admin.id, ...verifiedManagerIds]
+            if (verifyError) {
+              console.error("Error verifying assigned users:", verifyError);
+              return [admin.id];
             }
 
-            const verifiedUserIds = verifiedUsers?.map((u: any) => u.id) || []
-            const accessibleIds = [admin.id, ...verifiedManagerIds, ...verifiedUserIds]
-            console.log("Superior manager can access (verified):", accessibleIds)
-            return accessibleIds
-          }
-        }
-
-        console.log("Superior manager has no verified managers")
-        return [admin.id]
-      } catch (error) {
-        console.error("Error in superior manager logic:", error)
-        return [admin.id]
-      }
-    }
-
-    // Manager
-    if (admin.is_manager) {
-      console.log("Manager loading accessible users for:", admin.id)
-
-      try {
-        const { data: userAssignments, error: userError } = await supabase
-          .from("user_assignments")
-          .select("assigned_user_id")
-          .eq("manager_id", admin.id)
-
-        if (userError) {
-          console.error("Error fetching user assignments for manager:", userError)
-          return [admin.id]
-        }
-
-        const assignedUserIds = userAssignments?.map((a) => a.assigned_user_id) || []
-        console.log("Manager's assigned user IDs:", assignedUserIds)
-
-        if (assignedUserIds.length > 0) {
-          const { data: verifiedUsers, error: verifyError } = await supabase
-            .from("users")
-            .select("id")
-            .in("id", assignedUserIds)
-            .eq("is_admin", false)
-            .eq("is_manager", false)
-            .eq("is_superiormanager", false)
-
-          if (verifyError) {
-            console.error("Error verifying assigned users:", verifyError)
-            return [admin.id]
+            const verifiedUserIds = verifiedUsers?.map((u: any) => u.id) || [];
+            const accessibleIds = [admin.id, ...verifiedUserIds];
+            console.log(
+              "Manager can access (verified users only):",
+              accessibleIds
+            );
+            return accessibleIds;
           }
 
-          const verifiedUserIds = verifiedUsers?.map((u: any) => u.id) || []
-          const accessibleIds = [admin.id, ...verifiedUserIds]
-          console.log("Manager can access (verified users only):", accessibleIds)
-          return accessibleIds
+          console.log("Manager has no verified assigned users");
+          return [admin.id];
+        } catch (error) {
+          console.error("Error in manager logic:", error);
+          return [admin.id];
         }
-
-        console.log("Manager has no verified assigned users")
-        return [admin.id]
-      } catch (error) {
-        console.error("Error in manager logic:", error)
-        return [admin.id]
       }
-    }
 
-    console.log("No valid admin role found")
-    return []
-  }, [])
+      console.log("No valid admin role found");
+      return [];
+    },
+    []
+  );
 
   // Get admin level description
   const getAdminLevelDescription = useMemo(() => {
-    if (!currentAdmin) return "Loading permissions..."
+    if (!currentAdmin) return "Loading permissions...";
 
-    if (currentAdmin.is_admin && !currentAdmin.is_superiormanager && !currentAdmin.is_manager) {
-      return "Full Administrator - Can manage all users"
+    if (
+      currentAdmin.is_admin &&
+      !currentAdmin.is_superiormanager &&
+      !currentAdmin.is_manager
+    ) {
+      return "Full Administrator - Can manage all users";
     }
     if (currentAdmin.is_admin && currentAdmin.is_superiormanager) {
-      return "Superior Manager - Can manage assigned managers and their users"
+      return "Superior Manager - Can manage assigned managers and their users";
     }
     if (currentAdmin.is_manager) {
-      return "Manager - Can manage assigned users only"
+      return "Manager - Can manage assigned users only";
     }
-    return "No admin permissions"
-  }, [currentAdmin])
+    return "No admin permissions";
+  }, [currentAdmin]);
 
   // Get role badges for user
   const getRoleBadges = useCallback((user: User) => {
-    const roles = []
-    if (user.is_superiormanager) roles.push({ label: "Superior Manager", color: "bg-purple-100 text-purple-800" })
-    else if (user.is_manager) roles.push({ label: "Manager", color: "bg-blue-100 text-blue-800" })
-    if (user.is_admin) roles.push({ label: "Admin", color: "bg-red-100 text-red-800" })
-    return roles
-  }, [])
+    const roles = [];
+    if (user.is_superiormanager)
+      roles.push({
+        label: "Superior Manager",
+        color: "bg-purple-100 text-purple-800",
+      });
+    else if (user.is_manager)
+      roles.push({ label: "Manager", color: "bg-blue-100 text-blue-800" });
+    if (user.is_admin)
+      roles.push({ label: "Admin", color: "bg-red-100 text-red-800" });
+    return roles;
+  }, []);
 
   // User search
   useEffect(() => {
     if (!currentAdmin || !accessibleUserIdsLoaded || userSearch.length < 2) {
-      setSearchResults([])
-      return
+      setSearchResults([]);
+      return;
     }
 
     const timeoutId = setTimeout(async () => {
-      setSearching(true)
+      setSearching(true);
       try {
-        console.log("Searching users with hierarchy for:", userSearch)
+        console.log("Searching users with hierarchy for:", userSearch);
 
-        const searchLower = userSearch.toLowerCase()
+        const searchLower = userSearch.toLowerCase();
 
         let query = supabase
           .from("users")
-          .select("id, email, full_name, password, is_admin, is_manager, is_superiormanager")
-          .or(`email.ilike.%${searchLower}%,full_name.ilike.%${searchLower}%`)
+          .select(
+            "id, email, full_name, password, is_admin, is_manager, is_superiormanager, bank_origin"
+          )
+          .or(`email.ilike.%${searchLower}%,full_name.ilike.%${searchLower}%`);
 
-        console.log("Search using cached accessible user IDs:", accessibleUserIds)
+        console.log(
+          "Search using cached accessible user IDs:",
+          accessibleUserIds
+        );
 
         if (accessibleUserIds.length > 0) {
-          console.log("Filtering search to accessible user IDs:", accessibleUserIds)
-          query = query.in("id", accessibleUserIds)
-        } else if (currentAdmin.is_admin && !currentAdmin.is_superiormanager && !currentAdmin.is_manager) {
-          console.log("Full admin search - no filter applied")
+          console.log(
+            "Filtering search to accessible user IDs:",
+            accessibleUserIds
+          );
+          query = query.in("id", accessibleUserIds);
+        } else if (
+          currentAdmin.is_admin &&
+          !currentAdmin.is_superiormanager &&
+          !currentAdmin.is_manager
+        ) {
+          console.log("Full admin search - no filter applied");
         } else {
-          console.log("No accessible users for search")
-          query = query.eq("id", "00000000-0000-0000-0000-000000000000")
+          console.log("No accessible users for search");
+          query = query.eq("id", "00000000-0000-0000-0000-000000000000");
         }
 
-        const { data, error } = await query.limit(20).order("created_at", { ascending: false })
+        const { data, error } = await query
+          .limit(20)
+          .order("created_at", { ascending: false });
 
         if (!error && data) {
           const transformedUsers = data.map((user: any) => ({
@@ -419,24 +481,27 @@ export default function UnifiedAdminPanel() {
             is_admin: user.is_admin || false,
             is_manager: user.is_manager || false,
             is_superiormanager: user.is_superiormanager || false,
-          }))
+            bank_origin: user.bank_origin || "Unknown",
+          }));
 
-          console.log(`Found ${transformedUsers.length} accessible users for search`)
-          setSearchResults(transformedUsers)
+          console.log(
+            `Found ${transformedUsers.length} accessible users for search`
+          );
+          setSearchResults(transformedUsers);
         } else {
-          console.error("Search error:", error)
-          setSearchResults([])
+          console.error("Search error:", error);
+          setSearchResults([]);
         }
       } catch (error) {
-        console.error("Search failed:", error)
-        setSearchResults([])
+        console.error("Search failed:", error);
+        setSearchResults([]);
       } finally {
-        setSearching(false)
+        setSearching(false);
       }
-    }, 300)
+    }, 300);
 
-    return () => clearTimeout(timeoutId)
-  }, [userSearch, currentAdmin, accessibleUserIds, accessibleUserIdsLoaded])
+    return () => clearTimeout(timeoutId);
+  }, [userSearch, currentAdmin, accessibleUserIds, accessibleUserIdsLoaded]);
 
   // Fetch tax data
   const fetchTaxData = useCallback(async (userId: string) => {
@@ -447,20 +512,20 @@ export default function UnifiedAdminPanel() {
         .eq("user_id", userId)
         .order("updated_at", { ascending: false })
         .limit(1)
-        .maybeSingle()
+        .maybeSingle();
 
       if (error) {
-        console.error("Error fetching tax data:", error)
-        return
+        console.error("Error fetching tax data:", error);
+        return;
       }
 
       if (data) {
-        setUserTaxData(data)
+        setUserTaxData(data);
         setEditValues({
           taxes: data.taxes.toString(),
           on_hold: data.on_hold.toString(),
           paid: data.paid.toString(),
-        })
+        });
       } else {
         setUserTaxData({
           id: "",
@@ -470,29 +535,41 @@ export default function UnifiedAdminPanel() {
           paid: 0,
           created_at: "",
           updated_at: "",
-        })
-        setEditValues({ taxes: "0", on_hold: "0", paid: "0" })
+        });
+        setEditValues({ taxes: "0", on_hold: "0", paid: "0" });
       }
     } catch (error) {
-      console.error("Failed to fetch tax data:", error)
+      console.error("Failed to fetch tax data:", error);
     }
-  }, [])
+  }, []);
 
   // Fetch user balances
   const fetchUserBalances = useCallback(async (userId: string) => {
     try {
       const results = await Promise.all([
-        supabase.from("usd_balances").select("balance").eq("user_id", userId).maybeSingle(),
-        supabase.from("euro_balances").select("balance").eq("user_id", userId).maybeSingle(),
-        supabase.from("cad_balances").select("balance").eq("user_id", userId).maybeSingle(),
+        supabase
+          .from("usd_balances")
+          .select("balance")
+          .eq("user_id", userId)
+          .maybeSingle(),
+        supabase
+          .from("euro_balances")
+          .select("balance")
+          .eq("user_id", userId)
+          .maybeSingle(),
+        supabase
+          .from("cad_balances")
+          .select("balance")
+          .eq("user_id", userId)
+          .maybeSingle(),
         supabase
           .from("newcrypto_balances")
           .select("btc_balance, eth_balance, usdt_balance")
           .eq("user_id", userId)
           .maybeSingle(),
-      ])
+      ]);
 
-      const [usdRes, eurRes, cadRes, cryptoRes] = results
+      const [usdRes, eurRes, cadRes, cryptoRes] = results;
 
       setUserBalances({
         usd: usdRes.data?.balance ?? 0,
@@ -501,7 +578,7 @@ export default function UnifiedAdminPanel() {
         btc: cryptoRes.data?.btc_balance ?? 0,
         eth: cryptoRes.data?.eth_balance ?? 0,
         usdt: cryptoRes.data?.usdt_balance ?? 0,
-      })
+      });
 
       console.log("Loaded balances for user:", {
         usd: usdRes.data?.balance,
@@ -510,52 +587,63 @@ export default function UnifiedAdminPanel() {
         btc: cryptoRes.data?.btc_balance,
         eth: cryptoRes.data?.eth_balance,
         usdt: cryptoRes.data?.usdt_balance,
-      })
+      });
     } catch (error) {
-      console.error("Error loading user balances:", error)
-      setUserBalances(null)
+      console.error("Error loading user balances:", error);
+      setUserBalances(null);
     }
-  }, [])
+  }, []);
 
   // Transaction Creator submit
   const submitTransaction = async () => {
-    if (!selectedUser || !transactionForm.thType || !transactionForm.thDetails) {
-      setTransactionMessage({ type: "error", text: "Please fill in all required fields" })
-      return
+    if (
+      !selectedUser ||
+      !transactionForm.thType ||
+      !transactionForm.thDetails
+    ) {
+      setTransactionMessage({
+        type: "error",
+        text: "Please fill in all required fields",
+      });
+      return;
     }
 
     if (!currentAdmin) {
-      setTransactionMessage({ type: "error", text: "Admin session not found" })
-      return
+      setTransactionMessage({ type: "error", text: "Admin session not found" });
+      return;
     }
 
-    const canCreateDeposit = accessibleUserIds.length === 0 || accessibleUserIds.includes(selectedUser.id)
+    const canCreateDeposit =
+      accessibleUserIds.length === 0 ||
+      accessibleUserIds.includes(selectedUser.id);
 
     if (!canCreateDeposit) {
       setTransactionMessage({
         type: "error",
         text: "You don't have permission to create deposits for this user",
-      })
-      return
+      });
+      return;
     }
 
-    setSubmittingTransaction(true)
-    setTransactionMessage(null)
+    setSubmittingTransaction(true);
+    setTransactionMessage(null);
 
     try {
-      const { error: transactionError } = await supabase.from("TransactionHistory").insert({
-        uuid: selectedUser.id,
-        thType: transactionForm.thType,
-        thDetails: transactionForm.thDetails,
-        thPoi: transactionForm.thPoi,
-        thStatus: transactionForm.thStatus,
-        thEmail: transactionForm.thEmail || selectedUser.email,
-        created_at: transactionForm.created_at
-          ? new Date(transactionForm.created_at).toISOString()
-          : new Date().toISOString(),
-      })
+      const { error: transactionError } = await supabase
+        .from("TransactionHistory")
+        .insert({
+          uuid: selectedUser.id,
+          thType: transactionForm.thType,
+          thDetails: transactionForm.thDetails,
+          thPoi: transactionForm.thPoi,
+          thStatus: transactionForm.thStatus,
+          thEmail: transactionForm.thEmail || selectedUser.email,
+          created_at: transactionForm.created_at
+            ? new Date(transactionForm.created_at).toISOString()
+            : new Date().toISOString(),
+        });
 
-      if (transactionError) throw transactionError
+      if (transactionError) throw transactionError;
 
       setTransactionForm({
         thType: "External Deposit",
@@ -564,38 +652,42 @@ export default function UnifiedAdminPanel() {
         thStatus: "Successful",
         thEmail: "",
         created_at: "",
-      })
+      });
 
       setTransactionMessage({
         type: "success",
-        text: `Transaction record created successfully for ${selectedUser.full_name || selectedUser.email}!`,
-      })
+        text: `Transaction record created successfully for ${
+          selectedUser.full_name || selectedUser.email
+        }!`,
+      });
     } catch (error: any) {
-      console.error("Error creating transaction:", error)
+      console.error("Error creating transaction:", error);
       setTransactionMessage({
         type: "error",
         text: `Error: ${error.message || "Unknown error occurred"}`,
-      })
+      });
     } finally {
-      setSubmittingTransaction(false)
+      setSubmittingTransaction(false);
     }
-  }
+  };
 
   // Tax Manager save
   const saveTaxData = useCallback(async () => {
-    if (!selectedUser || !currentAdmin) return
+    if (!selectedUser || !currentAdmin) return;
 
-    const canManageTaxes = accessibleUserIds.length === 0 || accessibleUserIds.includes(selectedUser.id)
+    const canManageTaxes =
+      accessibleUserIds.length === 0 ||
+      accessibleUserIds.includes(selectedUser.id);
 
     if (!canManageTaxes) {
       setTaxMessage({
         type: "error",
         text: "You don't have permission to manage taxes for this user",
-      })
-      return
+      });
+      return;
     }
 
-    setLoadingTax(true)
+    setLoadingTax(true);
     try {
       const taxData = {
         user_id: selectedUser.id,
@@ -603,76 +695,87 @@ export default function UnifiedAdminPanel() {
         on_hold: Number.parseFloat(editValues.on_hold) || 0,
         paid: Number.parseFloat(editValues.paid) || 0,
         updated_at: new Date().toISOString(),
-      }
+      };
 
-      const { error } = await supabase.from("taxes").upsert(taxData, { onConflict: "user_id" })
+      const { error } = await supabase
+        .from("taxes")
+        .upsert(taxData, { onConflict: "user_id" });
 
-      if (error) throw error
+      if (error) throw error;
 
       setTaxMessage({
         type: "success",
-        text: `Tax data updated successfully for ${selectedUser.full_name || selectedUser.email}`,
-      })
+        text: `Tax data updated successfully for ${
+          selectedUser.full_name || selectedUser.email
+        }`,
+      });
 
-      setEditMode(false)
-      await new Promise((r) => setTimeout(r, 300))
-      await fetchTaxData(selectedUser.id)
+      setEditMode(false);
+      await new Promise((r) => setTimeout(r, 300));
+      await fetchTaxData(selectedUser.id);
     } catch (error: any) {
-      console.error("Error saving tax data:", error)
+      console.error("Error saving tax data:", error);
       setTaxMessage({
         type: "error",
         text: `Error: ${error.message || "Failed to save tax data"}`,
-      })
+      });
     } finally {
-      setLoadingTax(false)
+      setLoadingTax(false);
     }
-  }, [selectedUser, currentAdmin, accessibleUserIds, editValues, fetchTaxData])
+  }, [selectedUser, currentAdmin, accessibleUserIds, editValues, fetchTaxData]);
 
   // Balance Updater functions
   const createTransferRecord = async (transferData: any) => {
     try {
-      console.log("Creating transfer record:", transferData)
-      const { data, error } = await supabase.from("transfers").insert(transferData).select()
+      console.log("Creating transfer record:", transferData);
+      const { data, error } = await supabase
+        .from("transfers")
+        .insert(transferData)
+        .select();
 
       if (error) {
-        console.error("Transfer creation error:", error)
-        return { success: false, error }
+        console.error("Transfer creation error:", error);
+        return { success: false, error };
       }
 
-      console.log("Transfer created successfully:", data)
-      return { success: true, data }
+      console.log("Transfer created successfully:", data);
+      return { success: true, data };
     } catch (err) {
-      console.error("Transfer creation exception:", err)
-      return { success: false, error: err }
+      console.error("Transfer creation exception:", err);
+      return { success: false, error: err };
     }
-  }
+  };
 
   const updateBalance = async () => {
     if (!selectedUser || !currency || !amount) {
-      setBalanceMessage("Please fill all fields and select a user")
-      return
+      setBalanceMessage("Please fill all fields and select a user");
+      return;
     }
 
     if (!currentAdmin) {
-      setBalanceMessage("Admin session not found")
-      return
+      setBalanceMessage("Admin session not found");
+      return;
     }
 
-    const canUpdateBalance = accessibleUserIds.length === 0 || accessibleUserIds.includes(selectedUser.id)
+    const canUpdateBalance =
+      accessibleUserIds.length === 0 ||
+      accessibleUserIds.includes(selectedUser.id);
 
     if (!canUpdateBalance) {
-      setBalanceMessage("❌ You don't have permission to update balances for this user")
-      return
+      setBalanceMessage(
+        "❌ You don't have permission to update balances for this user"
+      );
+      return;
     }
 
-    setLoadingBalance(true)
+    setLoadingBalance(true);
     try {
-      const userId = selectedUser.id
-      const selectedCurrency = currencies.find((c) => c.value === currency)
-      const amountValue = Number.parseFloat(amount)
+      const userId = selectedUser.id;
+      const selectedCurrency = currencies.find((c) => c.value === currency);
+      const amountValue = Number.parseFloat(amount);
 
       if (!selectedCurrency) {
-        throw new Error("Invalid currency selected")
+        throw new Error("Invalid currency selected");
       }
 
       // Handle crypto currencies
@@ -683,9 +786,9 @@ export default function UnifiedAdminPanel() {
             p_crypto_type: currency,
             p_amount: amountValue,
             p_operation: operation,
-          })
+          });
 
-          if (error) throw error
+          if (error) throw error;
 
           const transferData = {
             user_id: userId,
@@ -700,40 +803,59 @@ export default function UnifiedAdminPanel() {
               operation === "add"
                 ? "admin_crypto_deposit"
                 : operation === "subtract"
-                  ? "admin_crypto_debit"
-                  : "admin_crypto_adjustment",
+                ? "admin_crypto_debit"
+                : "admin_crypto_adjustment",
             description:
               operation === "add"
-                ? `Crypto Credit - ${amountValue.toFixed(8)} ${currency} has been deposited to your account`
+                ? `Crypto Credit - ${amountValue.toFixed(
+                    8
+                  )} ${currency} has been deposited to your account`
                 : operation === "subtract"
-                  ? `Crypto Debit - ${amountValue.toFixed(8)} ${currency} has been debited from your account`
-                  : `Crypto Balance Adjustment - Account balance set to ${amountValue.toFixed(8)} ${currency}`,
-          }
+                ? `Crypto Debit - ${amountValue.toFixed(
+                    8
+                  )} ${currency} has been debited from your account`
+                : `Crypto Balance Adjustment - Account balance set to ${amountValue.toFixed(
+                    8
+                  )} ${currency}`,
+          };
 
-          const transferResult = await createTransferRecord(transferData)
+          const transferResult = await createTransferRecord(transferData);
 
           if (transferResult.success) {
             setBalanceMessage(
               `✅ Successfully ${
-                operation === "add" ? "added" : operation === "subtract" ? "subtracted" : "set"
+                operation === "add"
+                  ? "added"
+                  : operation === "subtract"
+                  ? "subtracted"
+                  : "set"
               } ${amount} ${currency} ${
-                operation === "add" ? "to" : operation === "subtract" ? "from" : "for"
-              } ${selectedUser.email} and logged to activity`,
-            )
+                operation === "add"
+                  ? "to"
+                  : operation === "subtract"
+                  ? "from"
+                  : "for"
+              } ${selectedUser.email} and logged to activity`
+            );
           } else {
-            setBalanceMessage(`⚠️ ${currency} balance updated but activity logging failed`)
+            setBalanceMessage(
+              `⚠️ ${currency} balance updated but activity logging failed`
+            );
           }
         } catch (error: any) {
-          throw new Error(`Crypto balance update failed: ${error.message}`)
+          throw new Error(`Crypto balance update failed: ${error.message}`);
         }
       } else {
         // Handle traditional currencies
-        const tableName = selectedCurrency.table
+        const tableName = selectedCurrency.table;
 
         if (operation === "set") {
-          const { error } = await supabase.from(tableName).update({ balance: amountValue }).eq("user_id", userId)
+          const { error } = await supabase
+            .from(tableName)
+            .update({ balance: amountValue })
+            .eq("user_id", userId);
 
-          if (error) throw error
+          if (error) throw error;
 
           const transferData = {
             user_id: userId,
@@ -746,32 +868,36 @@ export default function UnifiedAdminPanel() {
             status: "completed",
             transfer_type: "admin_balance_adjustment",
             description: `Account Balance Adjustment - Account balance set to ${amountValue.toLocaleString()} ${currency.toUpperCase()}`,
-          }
+          };
 
-          const transferResult = await createTransferRecord(transferData)
+          const transferResult = await createTransferRecord(transferData);
           if (transferResult.success) {
             setBalanceMessage(
-              `✅ Successfully set ${currency} balance to ${amount} for ${selectedUser.email} and logged to activity`,
-            )
+              `✅ Successfully set ${currency} balance to ${amount} for ${selectedUser.email} and logged to activity`
+            );
           } else {
-            setBalanceMessage(`⚠️ Balance updated to ${amount} for ${selectedUser.email} but activity logging failed`)
+            setBalanceMessage(
+              `⚠️ Balance updated to ${amount} for ${selectedUser.email} but activity logging failed`
+            );
           }
         } else {
           const { data: currentData, error: fetchError } = await supabase
             .from(tableName)
             .select("balance")
             .eq("user_id", userId)
-            .single()
+            .single();
 
           if (fetchError) {
             if (fetchError.code === "PGRST116") {
-              const newBalance = operation === "add" ? amountValue : 0
-              const { error: insertError } = await supabase.from(tableName).insert({
-                user_id: userId,
-                balance: newBalance,
-              })
+              const newBalance = operation === "add" ? amountValue : 0;
+              const { error: insertError } = await supabase
+                .from(tableName)
+                .insert({
+                  user_id: userId,
+                  balance: newBalance,
+                });
 
-              if (insertError) throw insertError
+              if (insertError) throw insertError;
 
               const transferData = {
                 user_id: userId,
@@ -782,37 +908,40 @@ export default function UnifiedAdminPanel() {
                 to_amount: newBalance,
                 exchange_rate: 1.0,
                 status: "completed",
-                transfer_type: operation === "add" ? "admin_deposit" : "admin_debit",
+                transfer_type:
+                  operation === "add" ? "admin_deposit" : "admin_debit",
                 description:
                   operation === "add"
                     ? `Account Credit - ${newBalance.toLocaleString()} ${currency.toUpperCase()} has been deposited to your account`
                     : `Account Setup - New ${currency.toUpperCase()} account created`,
-              }
+              };
 
-              const transferResult = await createTransferRecord(transferData)
+              const transferResult = await createTransferRecord(transferData);
               if (transferResult.success) {
                 setBalanceMessage(
-                  `✅ Created new ${currency} balance: ${newBalance} for ${selectedUser.email} and logged to activity`,
-                )
+                  `✅ Created new ${currency} balance: ${newBalance} for ${selectedUser.email} and logged to activity`
+                );
               } else {
                 setBalanceMessage(
-                  `⚠️ Created new ${currency} balance: ${newBalance} for ${selectedUser.email} but activity logging failed`,
-                )
+                  `⚠️ Created new ${currency} balance: ${newBalance} for ${selectedUser.email} but activity logging failed`
+                );
               }
             } else {
-              throw fetchError
+              throw fetchError;
             }
           } else {
-            const currentBalance = currentData.balance || 0
+            const currentBalance = currentData.balance || 0;
             const newBalance =
-              operation === "add" ? currentBalance + amountValue : Math.max(0, currentBalance - amountValue)
+              operation === "add"
+                ? currentBalance + amountValue
+                : Math.max(0, currentBalance - amountValue);
 
             const { error: updateError } = await supabase
               .from(tableName)
               .update({ balance: newBalance })
-              .eq("user_id", userId)
+              .eq("user_id", userId);
 
-            if (updateError) throw updateError
+            if (updateError) throw updateError;
 
             const transferData = {
               user_id: userId,
@@ -823,122 +952,131 @@ export default function UnifiedAdminPanel() {
               to_amount: operation === "add" ? newBalance : amountValue,
               exchange_rate: 1.0,
               status: "completed",
-              transfer_type: operation === "add" ? "admin_deposit" : "admin_debit",
+              transfer_type:
+                operation === "add" ? "admin_deposit" : "admin_debit",
               description:
                 operation === "add"
                   ? `Account Credit - ${amountValue.toLocaleString()} ${currency.toUpperCase()} has been deposited to your account`
                   : `Account Debit - ${amountValue.toLocaleString()} ${currency.toUpperCase()} has been debited from your account`,
-            }
+            };
 
-            const transferResult = await createTransferRecord(transferData)
+            const transferResult = await createTransferRecord(transferData);
             if (transferResult.success) {
               setBalanceMessage(
-                `✅ Successfully ${operation === "add" ? "added" : "subtracted"} ${amount} ${
+                `✅ Successfully ${
+                  operation === "add" ? "added" : "subtracted"
+                } ${amount} ${
                   operation === "add" ? "to" : "from"
-                } ${currency} balance for ${selectedUser.email}. New balance: ${newBalance}. Activity logged.`,
-              )
+                } ${currency} balance for ${
+                  selectedUser.email
+                }. New balance: ${newBalance}. Activity logged.`
+              );
             } else {
               setBalanceMessage(
-                `⚠️ Successfully ${operation === "add" ? "added" : "subtracted"} ${amount} ${
+                `⚠️ Successfully ${
+                  operation === "add" ? "added" : "subtracted"
+                } ${amount} ${
                   operation === "add" ? "to" : "from"
-                } ${currency} balance for ${selectedUser.email}. New balance: ${newBalance}. Activity logging failed.`,
-              )
+                } ${currency} balance for ${
+                  selectedUser.email
+                }. New balance: ${newBalance}. Activity logging failed.`
+              );
             }
           }
         }
       }
 
-      setCurrency("")
-      setAmount("")
-      await fetchUserBalances(selectedUser.id)
+      setCurrency("");
+      setAmount("");
+      await fetchUserBalances(selectedUser.id);
     } catch (error: any) {
-      console.error("Main error:", error)
-      setBalanceMessage(`❌ Error: ${error.message}`)
+      console.error("Main error:", error);
+      setBalanceMessage(`❌ Error: ${error.message}`);
     } finally {
-      setLoadingBalance(false)
+      setLoadingBalance(false);
     }
-  }
+  };
 
   const formatCurrency = useCallback((amount: number) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
       minimumFractionDigits: 2,
-    }).format(amount)
-  }, [])
+    }).format(amount);
+  }, []);
 
   // Initialize current admin
   useEffect(() => {
-    let mounted = true
+    let mounted = true;
 
     const init = async () => {
       try {
-        const admin = await getCurrentAdmin()
+        const admin = await getCurrentAdmin();
         if (mounted) {
-          setCurrentAdmin(admin)
+          setCurrentAdmin(admin);
         }
       } catch (error) {
-        console.error("Failed to initialize:", error)
+        console.error("Failed to initialize:", error);
       } finally {
         if (mounted) {
-          setLoadingPermissions(false)
+          setLoadingPermissions(false);
         }
       }
-    }
+    };
 
-    init()
+    init();
 
     return () => {
-      mounted = false
-    }
-  }, [getCurrentAdmin])
+      mounted = false;
+    };
+  }, [getCurrentAdmin]);
 
   // Load accessible user IDs
   useEffect(() => {
-    let mounted = true
+    let mounted = true;
 
     if (!currentAdmin) {
-      setAccessibleUserIds([])
-      setAccessibleUserIdsLoaded(false)
-      return
+      setAccessibleUserIds([]);
+      setAccessibleUserIdsLoaded(false);
+      return;
     }
 
     const loadUserIds = async () => {
       try {
-        console.log("Loading accessible user IDs for admin:", currentAdmin)
-        const userIds = await loadAccessibleUserIds(currentAdmin)
+        console.log("Loading accessible user IDs for admin:", currentAdmin);
+        const userIds = await loadAccessibleUserIds(currentAdmin);
         if (mounted) {
-          setAccessibleUserIds(userIds)
-          setAccessibleUserIdsLoaded(true)
-          console.log("Cached accessible user IDs:", userIds)
+          setAccessibleUserIds(userIds);
+          setAccessibleUserIdsLoaded(true);
+          console.log("Cached accessible user IDs:", userIds);
         }
       } catch (error) {
-        console.error("Failed to load accessible users:", error)
+        console.error("Failed to load accessible users:", error);
         if (mounted) {
-          setAccessibleUserIds([])
-          setAccessibleUserIdsLoaded(true)
+          setAccessibleUserIds([]);
+          setAccessibleUserIdsLoaded(true);
         }
       }
-    }
+    };
 
-    loadUserIds()
+    loadUserIds();
 
     return () => {
-      mounted = false
-    }
-  }, [currentAdmin, loadAccessibleUserIds])
+      mounted = false;
+    };
+  }, [currentAdmin, loadAccessibleUserIds]);
 
   // Fetch data when user is selected
   useEffect(() => {
     if (selectedUser) {
-      fetchTaxData(selectedUser.id)
-      fetchUserBalances(selectedUser.id)
+      fetchTaxData(selectedUser.id);
+      fetchUserBalances(selectedUser.id);
     } else {
-      setUserTaxData(null)
-      setEditValues({ taxes: "0", on_hold: "0", paid: "0" })
-      setUserBalances(null)
+      setUserTaxData(null);
+      setEditValues({ taxes: "0", on_hold: "0", paid: "0" });
+      setUserBalances(null);
     }
-  }, [selectedUser, fetchTaxData, fetchUserBalances])
+  }, [selectedUser, fetchTaxData, fetchUserBalances]);
 
   // Loading state
   if (loadingPermissions) {
@@ -949,7 +1087,7 @@ export default function UnifiedAdminPanel() {
           <p className="text-gray-600">Loading admin permissions...</p>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   // No admin session
@@ -966,11 +1104,15 @@ export default function UnifiedAdminPanel() {
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <AlertTriangle className="w-8 h-8 text-red-600" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Admin Session Not Found</h3>
-          <p className="text-gray-600 mb-4">Unable to verify your admin permissions. Please log in again.</p>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            Admin Session Not Found
+          </h3>
+          <p className="text-gray-600 mb-4">
+            Unable to verify your admin permissions. Please log in again.
+          </p>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   // Check if user has any admin access
@@ -987,20 +1129,38 @@ export default function UnifiedAdminPanel() {
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <Shield className="w-8 h-8 text-red-600" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Admin Access Required</h3>
-          <p className="text-gray-600 mb-4">You need admin or manager permissions to access this panel.</p>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            Admin Access Required
+          </h3>
+          <p className="text-gray-600 mb-4">
+            You need admin or manager permissions to access this panel.
+          </p>
           <div className="space-y-2 text-sm text-gray-500">
             <p>Your current permissions:</p>
             <div className="flex justify-center space-x-2">
-              <Badge className={currentAdmin.is_admin ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+              <Badge
+                className={
+                  currentAdmin.is_admin
+                    ? "bg-green-100 text-green-800"
+                    : "bg-red-100 text-red-800"
+                }
+              >
                 Admin: {currentAdmin.is_admin ? "Yes" : "No"}
               </Badge>
-              <Badge className={currentAdmin.is_manager ? "bg-blue-100 text-blue-800" : "bg-gray-100 text-gray-800"}>
+              <Badge
+                className={
+                  currentAdmin.is_manager
+                    ? "bg-blue-100 text-blue-800"
+                    : "bg-gray-100 text-gray-800"
+                }
+              >
                 Manager: {currentAdmin.is_manager ? "Yes" : "No"}
               </Badge>
               <Badge
                 className={
-                  currentAdmin.is_superiormanager ? "bg-purple-100 text-purple-800" : "bg-gray-100 text-gray-800"
+                  currentAdmin.is_superiormanager
+                    ? "bg-purple-100 text-purple-800"
+                    : "bg-gray-100 text-gray-800"
                 }
               >
                 Superior: {currentAdmin.is_superiormanager ? "Yes" : "No"}
@@ -1009,11 +1169,11 @@ export default function UnifiedAdminPanel() {
           </div>
         </CardContent>
       </Card>
-    )
+    );
   }
 
-  const selectedCurrency = currencies.find((c) => c.value === currency)
-  const IconComponent = selectedCurrency?.icon || DollarSign
+  const selectedCurrency = currencies.find((c) => c.value === currency);
+  const IconComponent = selectedCurrency?.icon || DollarSign;
 
   return (
     <div className="space-y-6">
@@ -1028,13 +1188,21 @@ export default function UnifiedAdminPanel() {
                 <div className="flex items-center space-x-2">
                   <CheckCircle className="w-5 h-5 text-green-600" />
                   <div>
-                    <p className="font-medium text-green-800">{selectedUser.full_name || selectedUser.email}</p>
+                    <p className="font-medium text-green-800">
+                      {selectedUser.full_name || selectedUser.email}
+                    </p>
                     <div className="flex items-center space-x-2">
                       <p className="text-sm text-green-600">
                         {selectedUser.client_id} • {selectedUser.email}
                       </p>
+                      <p className="text-xs text-gray-500">
+                        🏦 Bank: {selectedUser.bank_origin}
+                      </p>
+
                       {selectedUser.password && (
-                        <p className="text-xs text-gray-500">🔑 Password: {selectedUser.password}</p>
+                        <p className="text-xs text-gray-500">
+                          🔑 Password: {selectedUser.password}
+                        </p>
                       )}
                       {getRoleBadges(selectedUser).map((role, index) => (
                         <Badge key={index} className={`text-xs ${role.color}`}>
@@ -1048,8 +1216,8 @@ export default function UnifiedAdminPanel() {
                   size="sm"
                   variant="ghost"
                   onClick={() => {
-                    setSelectedUser(null)
-                    setUserSearch("")
+                    setSelectedUser(null);
+                    setUserSearch("");
                   }}
                 >
                   <X className="w-4 h-4" />
@@ -1061,11 +1229,14 @@ export default function UnifiedAdminPanel() {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <Input
                     placeholder={
-                      currentAdmin.is_admin && !currentAdmin.is_superiormanager && !currentAdmin.is_manager
+                      currentAdmin.is_admin &&
+                      !currentAdmin.is_superiormanager &&
+                      !currentAdmin.is_manager
                         ? "Search any user by name or email..."
-                        : currentAdmin.is_admin && currentAdmin.is_superiormanager
-                          ? "Search your assigned managers and their users..."
-                          : "Search your assigned users..."
+                        : currentAdmin.is_admin &&
+                          currentAdmin.is_superiormanager
+                        ? "Search your assigned managers and their users..."
+                        : "Search your assigned users..."
                     }
                     value={userSearch}
                     onChange={(e) => setUserSearch(e.target.value)}
@@ -1080,15 +1251,15 @@ export default function UnifiedAdminPanel() {
                   <div className="border rounded-lg max-h-48 overflow-y-auto">
                     {searchResults.length > 0 ? (
                       searchResults.map((user) => {
-                        const roles = getRoleBadges(user)
+                        const roles = getRoleBadges(user);
                         return (
                           <div
                             key={user.id}
                             className="p-3 hover:bg-gray-50 cursor-pointer border-b last:border-b-0"
                             onClick={() => {
-                              setSelectedUser(user)
-                              setUserSearch("")
-                              setSearchResults([])
+                              setSelectedUser(user);
+                              setUserSearch("");
+                              setSearchResults([]);
                             }}
                           >
                             <div className="flex items-center justify-between">
@@ -1096,7 +1267,9 @@ export default function UnifiedAdminPanel() {
                                 <Users className="h-4 w-4 text-gray-400" />
                                 <div>
                                   <p className="font-medium text-sm">
-                                    {user.full_name || user.email?.split("@")[0] || "Unknown User"}
+                                    {user.full_name ||
+                                      user.email?.split("@")[0] ||
+                                      "Unknown User"}
                                   </p>
                                   <p className="text-xs text-gray-500">
                                     {user.client_id} • {user.email}
@@ -1105,14 +1278,17 @@ export default function UnifiedAdminPanel() {
                               </div>
                               <div className="flex space-x-1">
                                 {roles.map((role, index) => (
-                                  <Badge key={index} className={`text-xs ${role.color}`}>
+                                  <Badge
+                                    key={index}
+                                    className={`text-xs ${role.color}`}
+                                  >
                                     {role.label}
                                   </Badge>
                                 ))}
                               </div>
                             </div>
                           </div>
-                        )
+                        );
                       })
                     ) : !searching ? (
                       <div className="p-4 text-center text-gray-500 text-sm">
@@ -1123,7 +1299,9 @@ export default function UnifiedAdminPanel() {
                 )}
 
                 {userSearch.length > 0 && userSearch.length < 2 && (
-                  <p className="text-xs text-gray-500">Type at least 2 characters to search</p>
+                  <p className="text-xs text-gray-500">
+                    Type at least 2 characters to search
+                  </p>
                 )}
 
                 {userSearch.length === 0 && (
@@ -1153,11 +1331,17 @@ export default function UnifiedAdminPanel() {
               {transactionMessage && (
                 <Alert
                   className={
-                    transactionMessage.type === "error" ? "border-red-500 bg-red-50" : "border-green-500 bg-green-50"
+                    transactionMessage.type === "error"
+                      ? "border-red-500 bg-red-50"
+                      : "border-green-500 bg-green-50"
                   }
                 >
                   <AlertDescription
-                    className={transactionMessage.type === "error" ? "text-red-700 text-xs" : "text-green-700 text-xs"}
+                    className={
+                      transactionMessage.type === "error"
+                        ? "text-red-700 text-xs"
+                        : "text-green-700 text-xs"
+                    }
                   >
                     {transactionMessage.text}
                   </AlertDescription>
@@ -1173,7 +1357,12 @@ export default function UnifiedAdminPanel() {
                     id="thType"
                     type="text"
                     value={transactionForm.thType}
-                    onChange={(e) => setTransactionForm({ ...transactionForm, thType: e.target.value })}
+                    onChange={(e) =>
+                      setTransactionForm({
+                        ...transactionForm,
+                        thType: e.target.value,
+                      })
+                    }
                     placeholder="Type any transaction type"
                     className="text-sm h-9"
                   />
@@ -1185,7 +1374,12 @@ export default function UnifiedAdminPanel() {
                   </Label>
                   <Select
                     value={transactionForm.thStatus}
-                    onValueChange={(value) => setTransactionForm({ ...transactionForm, thStatus: value })}
+                    onValueChange={(value) =>
+                      setTransactionForm({
+                        ...transactionForm,
+                        thStatus: value,
+                      })
+                    }
                   >
                     <SelectTrigger className="h-9 text-sm">
                       <SelectValue placeholder="Select status" />
@@ -1209,7 +1403,12 @@ export default function UnifiedAdminPanel() {
                   <Textarea
                     id="thDetails"
                     value={transactionForm.thDetails}
-                    onChange={(e) => setTransactionForm({ ...transactionForm, thDetails: e.target.value })}
+                    onChange={(e) =>
+                      setTransactionForm({
+                        ...transactionForm,
+                        thDetails: e.target.value,
+                      })
+                    }
                     placeholder="Detailed description"
                     rows={2}
                     className="resize-none text-sm"
@@ -1223,7 +1422,12 @@ export default function UnifiedAdminPanel() {
                   <Input
                     id="thPoi"
                     value={transactionForm.thPoi}
-                    onChange={(e) => setTransactionForm({ ...transactionForm, thPoi: e.target.value })}
+                    onChange={(e) =>
+                      setTransactionForm({
+                        ...transactionForm,
+                        thPoi: e.target.value,
+                      })
+                    }
                     placeholder="e.g., Estonia FIU"
                     className="text-sm h-9"
                   />
@@ -1236,8 +1440,16 @@ export default function UnifiedAdminPanel() {
                   <Input
                     id="customDate"
                     type="datetime-local"
-                    value={transactionForm.created_at || new Date().toISOString().slice(0, 16)}
-                    onChange={(e) => setTransactionForm({ ...transactionForm, created_at: e.target.value })}
+                    value={
+                      transactionForm.created_at ||
+                      new Date().toISOString().slice(0, 16)
+                    }
+                    onChange={(e) =>
+                      setTransactionForm({
+                        ...transactionForm,
+                        created_at: e.target.value,
+                      })
+                    }
                     className="text-sm h-9"
                   />
                 </div>
@@ -1250,7 +1462,12 @@ export default function UnifiedAdminPanel() {
                     id="thEmail"
                     type="email"
                     value={transactionForm.thEmail}
-                    onChange={(e) => setTransactionForm({ ...transactionForm, thEmail: e.target.value })}
+                    onChange={(e) =>
+                      setTransactionForm({
+                        ...transactionForm,
+                        thEmail: e.target.value,
+                      })
+                    }
                     placeholder={`Default: ${selectedUser.email || "No email"}`}
                     className="text-sm h-9"
                   />
@@ -1259,7 +1476,10 @@ export default function UnifiedAdminPanel() {
                 <Button
                   onClick={submitTransaction}
                   disabled={
-                    submittingTransaction || !selectedUser || !transactionForm.thType || !transactionForm.thDetails
+                    submittingTransaction ||
+                    !selectedUser ||
+                    !transactionForm.thType ||
+                    !transactionForm.thDetails
                   }
                   className="w-full bg-[#F26623] hover:bg-[#E55A1F] h-9 text-sm"
                 >
@@ -1288,7 +1508,12 @@ export default function UnifiedAdminPanel() {
                   Tax Manager
                 </CardTitle>
                 {userTaxData && !editMode && (
-                  <Button onClick={() => setEditMode(true)} variant="outline" size="sm" className="h-7 text-xs">
+                  <Button
+                    onClick={() => setEditMode(true)}
+                    variant="outline"
+                    size="sm"
+                    className="h-7 text-xs"
+                  >
                     <Edit className="w-3 h-3 mr-1" />
                     Edit
                   </Button>
@@ -1298,10 +1523,18 @@ export default function UnifiedAdminPanel() {
             <CardContent className="space-y-3">
               {taxMessage && (
                 <Alert
-                  className={taxMessage.type === "error" ? "border-red-500 bg-red-50" : "border-green-500 bg-green-50"}
+                  className={
+                    taxMessage.type === "error"
+                      ? "border-red-500 bg-red-50"
+                      : "border-green-500 bg-green-50"
+                  }
                 >
                   <AlertDescription
-                    className={taxMessage.type === "error" ? "text-red-700 text-xs" : "text-green-700 text-xs"}
+                    className={
+                      taxMessage.type === "error"
+                        ? "text-red-700 text-xs"
+                        : "text-green-700 text-xs"
+                    }
                   >
                     {taxMessage.text}
                   </AlertDescription>
@@ -1324,11 +1557,18 @@ export default function UnifiedAdminPanel() {
                           type="number"
                           step="0.01"
                           value={editValues.taxes}
-                          onChange={(e) => setEditValues({ ...editValues, taxes: e.target.value })}
+                          onChange={(e) =>
+                            setEditValues({
+                              ...editValues,
+                              taxes: e.target.value,
+                            })
+                          }
                           className="font-mono text-sm h-8"
                         />
                       ) : (
-                        <p className="text-lg font-bold text-yellow-700">{formatCurrency(userTaxData.taxes)}</p>
+                        <p className="text-lg font-bold text-yellow-700">
+                          {formatCurrency(userTaxData.taxes)}
+                        </p>
                       )}
                     </div>
 
@@ -1345,11 +1585,18 @@ export default function UnifiedAdminPanel() {
                           type="number"
                           step="0.01"
                           value={editValues.on_hold}
-                          onChange={(e) => setEditValues({ ...editValues, on_hold: e.target.value })}
+                          onChange={(e) =>
+                            setEditValues({
+                              ...editValues,
+                              on_hold: e.target.value,
+                            })
+                          }
                           className="font-mono text-sm h-8"
                         />
                       ) : (
-                        <p className="text-lg font-bold text-blue-700">{formatCurrency(userTaxData.on_hold)}</p>
+                        <p className="text-lg font-bold text-blue-700">
+                          {formatCurrency(userTaxData.on_hold)}
+                        </p>
                       )}
                     </div>
 
@@ -1366,11 +1613,18 @@ export default function UnifiedAdminPanel() {
                           type="number"
                           step="0.01"
                           value={editValues.paid}
-                          onChange={(e) => setEditValues({ ...editValues, paid: e.target.value })}
+                          onChange={(e) =>
+                            setEditValues({
+                              ...editValues,
+                              paid: e.target.value,
+                            })
+                          }
                           className="font-mono text-sm h-8"
                         />
                       ) : (
-                        <p className="text-lg font-bold text-green-700">{formatCurrency(userTaxData.paid)}</p>
+                        <p className="text-lg font-bold text-green-700">
+                          {formatCurrency(userTaxData.paid)}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -1379,13 +1633,13 @@ export default function UnifiedAdminPanel() {
                     <div className="flex space-x-2">
                       <Button
                         onClick={() => {
-                          setEditMode(false)
+                          setEditMode(false);
                           if (userTaxData) {
                             setEditValues({
                               taxes: userTaxData.taxes.toString(),
                               on_hold: userTaxData.on_hold.toString(),
                               paid: userTaxData.paid.toString(),
-                            })
+                            });
                           }
                         }}
                         variant="outline"
@@ -1412,13 +1666,22 @@ export default function UnifiedAdminPanel() {
 
                   {!editMode && (
                     <div className="p-3 bg-gray-50 border rounded-lg">
-                      <p className="text-xs font-medium text-gray-600">Summary</p>
+                      <p className="text-xs font-medium text-gray-600">
+                        Summary
+                      </p>
                       <p className="text-sm font-semibold text-gray-900">
-                        Outstanding: {formatCurrency(userTaxData.taxes + userTaxData.on_hold)}
+                        Outstanding:{" "}
+                        {formatCurrency(
+                          userTaxData.taxes + userTaxData.on_hold
+                        )}
                       </p>
                       <p className="text-xs text-gray-600">
                         Last Updated:{" "}
-                        {userTaxData.updated_at ? new Date(userTaxData.updated_at).toLocaleDateString() : "Never"}
+                        {userTaxData.updated_at
+                          ? new Date(
+                              userTaxData.updated_at
+                            ).toLocaleDateString()
+                          : "Never"}
                       </p>
                     </div>
                   )}
@@ -1441,37 +1704,56 @@ export default function UnifiedAdminPanel() {
                   <div className="p-2 border rounded bg-white">
                     <p className="text-xs text-gray-600">USD</p>
                     <p className="text-sm font-semibold">
-                      ${Number(userBalances.usd).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                      $
+                      {Number(userBalances.usd).toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                      })}
                     </p>
                   </div>
                   <div className="p-2 border rounded bg-white">
                     <p className="text-xs text-gray-600">EUR</p>
                     <p className="text-sm font-semibold">
-                      €{Number(userBalances.euro).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                      €
+                      {Number(userBalances.euro).toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                      })}
                     </p>
                   </div>
                   <div className="p-2 border rounded bg-white">
                     <p className="text-xs text-gray-600">CAD</p>
                     <p className="text-sm font-semibold">
-                      C${Number(userBalances.cad).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                      C$
+                      {Number(userBalances.cad).toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                      })}
                     </p>
                   </div>
                   <div className="p-2 border rounded bg-white">
                     <p className="text-xs text-gray-600">BTC</p>
-                    <p className="text-sm font-semibold">{Number(userBalances.btc).toFixed(8)}</p>
+                    <p className="text-sm font-semibold">
+                      {Number(userBalances.btc).toFixed(8)}
+                    </p>
                   </div>
                   <div className="p-2 border rounded bg-white">
                     <p className="text-xs text-gray-600">ETH</p>
-                    <p className="text-sm font-semibold">{Number(userBalances.eth).toFixed(8)}</p>
+                    <p className="text-sm font-semibold">
+                      {Number(userBalances.eth).toFixed(8)}
+                    </p>
                   </div>
                   <div className="p-2 border rounded bg-white">
                     <p className="text-xs text-gray-600">USDT</p>
-                    <p className="text-sm font-semibold">{Number(userBalances.usdt).toFixed(6)}</p>
+                    <p className="text-sm font-semibold">
+                      {Number(userBalances.usdt).toFixed(6)}
+                    </p>
                   </div>
                 </div>
               )}
 
-              <Tabs value={operation} onValueChange={setOperation} className="w-full">
+              <Tabs
+                value={operation}
+                onValueChange={setOperation}
+                className="w-full"
+              >
                 <TabsList className="grid w-full grid-cols-3 h-8">
                   <TabsTrigger value="add" className="text-xs">
                     <TrendingUp className="h-3 w-3 mr-1" />
@@ -1498,21 +1780,27 @@ export default function UnifiedAdminPanel() {
                       <SelectValue placeholder="Select currency" />
                     </SelectTrigger>
                     <SelectContent>
-                      <div className="px-2 py-1 text-xs font-semibold text-gray-500 uppercase">Traditional</div>
+                      <div className="px-2 py-1 text-xs font-semibold text-gray-500 uppercase">
+                        Traditional
+                      </div>
                       {currencies
-                        .filter((c) => !["BTC", "ETH", "USDT"].includes(c.value))
+                        .filter(
+                          (c) => !["BTC", "ETH", "USDT"].includes(c.value)
+                        )
                         .map((curr) => {
-                          const IconComponent = curr.icon
+                          const IconComponent = curr.icon;
                           return (
                             <SelectItem key={curr.value} value={curr.value}>
                               <div className="flex items-center gap-2">
-                                <div className={`w-4 h-4 rounded-full ${curr.color} flex items-center justify-center`}>
+                                <div
+                                  className={`w-4 h-4 rounded-full ${curr.color} flex items-center justify-center`}
+                                >
                                   <IconComponent className="w-2 h-2 text-white" />
                                 </div>
                                 <span className="text-sm">{curr.label}</span>
                               </div>
                             </SelectItem>
-                          )
+                          );
                         })}
 
                       <div className="px-2 py-1 text-xs font-semibold text-gray-500 uppercase border-t mt-1 pt-1">
@@ -1521,17 +1809,19 @@ export default function UnifiedAdminPanel() {
                       {currencies
                         .filter((c) => ["BTC", "ETH", "USDT"].includes(c.value))
                         .map((curr) => {
-                          const IconComponent = curr.icon
+                          const IconComponent = curr.icon;
                           return (
                             <SelectItem key={curr.value} value={curr.value}>
                               <div className="flex items-center gap-2">
-                                <div className={`w-4 h-4 rounded-full ${curr.color} flex items-center justify-center`}>
+                                <div
+                                  className={`w-4 h-4 rounded-full ${curr.color} flex items-center justify-center`}
+                                >
                                   <IconComponent className="w-2 h-2 text-white" />
                                 </div>
                                 <span className="text-sm">{curr.label}</span>
                               </div>
                             </SelectItem>
-                          )
+                          );
                         })}
                     </SelectContent>
                   </Select>
@@ -1540,7 +1830,11 @@ export default function UnifiedAdminPanel() {
                 <div>
                   <Label htmlFor="amount" className="text-xs">
                     Amount
-                    {selectedCurrency && <span className="text-gray-500 ml-1">({selectedCurrency.symbol})</span>}
+                    {selectedCurrency && (
+                      <span className="text-gray-500 ml-1">
+                        ({selectedCurrency.symbol})
+                      </span>
+                    )}
                   </Label>
                   <div className="relative mt-1">
                     {selectedCurrency && (
@@ -1559,7 +1853,9 @@ export default function UnifiedAdminPanel() {
                       placeholder="Enter amount"
                       value={amount}
                       onChange={(e) => setAmount(e.target.value)}
-                      className={`${selectedCurrency ? "pl-9" : ""} font-mono text-sm h-9`}
+                      className={`${
+                        selectedCurrency ? "pl-9" : ""
+                      } font-mono text-sm h-9`}
                     />
                   </div>
                 </div>
@@ -1567,7 +1863,9 @@ export default function UnifiedAdminPanel() {
 
               <Button
                 onClick={updateBalance}
-                disabled={loadingBalance || !selectedUser || !currency || !amount}
+                disabled={
+                  loadingBalance || !selectedUser || !currency || !amount
+                }
                 className="w-full bg-[#F26623] hover:bg-[#E55A1F] h-9 text-sm"
               >
                 {loadingBalance ? (
@@ -1577,10 +1875,20 @@ export default function UnifiedAdminPanel() {
                   </>
                 ) : (
                   <>
-                    {operation === "add" && <TrendingUp className="h-3 w-3 mr-2" />}
-                    {operation === "subtract" && <TrendingDown className="h-3 w-3 mr-2" />}
-                    {operation === "set" && <Settings className="h-3 w-3 mr-2" />}
-                    {operation === "add" ? "Credit" : operation === "subtract" ? "Debit" : "Adjust"}
+                    {operation === "add" && (
+                      <TrendingUp className="h-3 w-3 mr-2" />
+                    )}
+                    {operation === "subtract" && (
+                      <TrendingDown className="h-3 w-3 mr-2" />
+                    )}
+                    {operation === "set" && (
+                      <Settings className="h-3 w-3 mr-2" />
+                    )}
+                    {operation === "add"
+                      ? "Credit"
+                      : operation === "subtract"
+                      ? "Debit"
+                      : "Adjust"}
                   </>
                 )}
               </Button>
@@ -1591,8 +1899,8 @@ export default function UnifiedAdminPanel() {
                     balanceMessage.includes("❌")
                       ? "text-red-600 bg-red-50 border-red-200"
                       : balanceMessage.includes("⚠️")
-                        ? "text-yellow-600 bg-yellow-50 border-yellow-200"
-                        : "text-green-600 bg-green-50 border-green-200"
+                      ? "text-yellow-600 bg-yellow-50 border-yellow-200"
+                      : "text-green-600 bg-green-50 border-green-200"
                   }`}
                 >
                   {balanceMessage}
@@ -1603,5 +1911,5 @@ export default function UnifiedAdminPanel() {
         </div>
       )}
     </div>
-  )
+  );
 }
