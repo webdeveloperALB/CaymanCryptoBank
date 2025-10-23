@@ -353,7 +353,7 @@ export default function AuthForm() {
                       Sign In
                     </h2>
                     <p className="text-gray-600 text-sm">
-                      Enter your Lithuanian Crypto Central Bank Account details.
+                      Enter your Cayman Crypto Bank Account details.
                     </p>
                   </div>
                   <form onSubmit={handleSignIn} className="space-y-6">
