@@ -301,7 +301,7 @@ export default function AuthForm() {
                 <img
                   src="/logo.png"
                   alt="Lithuanian Crypto Central Bank Logo"
-                  className="h-[60px] sm:h-[160px] w-auto object-contain scale-110 sm:scale-125 lg:scale-150"
+                  className="h-[40px] sm:h-[80px] w-auto object-contain scale-110 sm:scale-125 lg:scale-150"
                 />
               </div>
             </div>
@@ -321,7 +321,7 @@ export default function AuthForm() {
               </div>
               <Button
                 variant="outline"
-                className="bg-transparent border-[#0A7F8D] text-[#0A7F8D] hover:bg-[#0A7F8D] hover:text-white px-4 py-2 text-sm rounded-md transition-all duration-300 w-full sm:w-auto"
+                className="bg-transparent border-[#2A3F78] text-[#2A3F78] hover:bg-[#2A3F78]/90 hover:text-white px-4 py-2 text-sm rounded-md transition-all duration-300 w-full sm:w-auto"
                 onClick={() => setIsSignUp(!isSignUp)}
               >
                 {isSignUp ? "Sign In" : "Create Account"}
@@ -408,7 +408,7 @@ export default function AuthForm() {
                     </div>
                     <Button
                       type="submit"
-                      className="w-24 h-10 bg-[#0A7F8D] hover:bg-[#0A7F8D] text-white font-medium rounded-md transition-all duration-300 disabled:opacity-50"
+                      className="w-24 h-10 bg-[#2A3F78] hover:bg-[#2A3F78]/90 text-white font-medium rounded-md transition-all duration-300 disabled:opacity-50"
                       disabled={loading}
                     >
                       {loading ? "..." : "Sign In"}
@@ -527,7 +527,7 @@ export default function AuthForm() {
                     <div className="pt-6">
                       <Button
                         type="submit"
-                        className="w-full h-12 bg-[#0A7F8D] hover:bg-[#0A7F8D] text-white font-medium rounded-md transition-all duration-300 disabled:opacity-50"
+                        className="w-full h-12 bg-[#2A3F78] hover:bg-[#2A3F78]/90 text-white font-medium rounded-md transition-all duration-300 disabled:opacity-50"
                         disabled={loading}
                       >
                         {loading ? "Creating Account..." : "Create Account"}
@@ -535,7 +535,7 @@ export default function AuthForm() {
                     </div>
                   </form>
                   <div className="flex flex-col sm:flex-row justify-between items-center mt-6 sm:mt-8 text-xs gap-2 sm:gap-0">
-                    <button className="text-gray-500 hover:text-[#0A7F8D] transition-colors">
+                    <button className="text-gray-500 hover:text-[#2A3F78] transition-colors">
                       Return Home
                     </button>
                     <span className="text-gray-400 text-center sm:text-right">
