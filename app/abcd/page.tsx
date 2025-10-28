@@ -784,7 +784,7 @@ export default function SecureAdminPage() {
         <div className="bg-[#F26623] text-white p-4 flex justify-between items-center">
           <div className="flex flex-row items-center justify-between text-orange-100">
             <h1 className="text-2xl font-bold pr-14">
-              Admin Panel - Lithuanian Crypto Central Bank
+              Admin Panel - Cayman Bank
             </h1>
 
             <div className="flex flex-row items-center space-x-6">

@@ -604,7 +604,7 @@ export default function KYCVerification({
                       <Button
                         type="submit"
                         disabled={loading}
-                        className="w-full md:w-auto px-8 py-3 bg-[#0A7F8D] hover:bg-[#0A7F8D] text-white font-medium rounded-md transition-all duration-300 disabled:opacity-50"
+                        className="w-full md:w-auto px-8 py-3 bg-[#2A3F78] hover:bg-[#2A3F78]/90 text-white font-medium rounded-md transition-all duration-300 disabled:opacity-50"
                       >
                         {loading ? "Submitting KYC..." : "Submit KYC Verification"}
                       </Button>

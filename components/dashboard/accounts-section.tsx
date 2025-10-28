@@ -276,7 +276,7 @@ export default function AccountsSection({ userProfile }: AccountsSectionProps) {
               <div className="flex gap-2">
                 <Button
                   onClick={addAccount}
-                  className="bg-[#0A7F8D] hover:bg-[#0A7F8D]"
+                  className="bg-[#2A3F78] hover:bg-[#2A3F78]/90"
                 >
                   Add Account
                 </Button>

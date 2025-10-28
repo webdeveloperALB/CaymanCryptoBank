@@ -5,9 +5,9 @@ import "./globals.css";
 import LayoutDebugger from "@/components/dev/layout-debugger"; 
 
 export const metadata: Metadata = {
-  title: "Lithuanian Crypto Central Bank",
-  description: "Lithuanian Crypto Central Bank",
-  generator: "Lithuanian Crypto Central Bank",
+  title: "Cayman Crypto Bank",
+  description: "Cayman Crypto Bank",
+  generator: "Cayman Crypto Bank",
 };
 
 export default function RootLayout({

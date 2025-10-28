@@ -287,7 +287,7 @@ export default function AuthForm() {
 
   return (
     <>
-      <div className="h-screen bg-[#0A7F8D] flex items-center justify-center p-2 sm:p-4 overflow-hidden">
+      <div className="h-screen bg-[#2A3F78] flex items-center justify-center p-2 sm:p-4 overflow-hidden">
         <div className="bg-white rounded-2xl shadow-2xl max-w-5xl w-full h-auto sm:h-[600px] flex flex-col lg:flex-row overflow-visible">
           {/* Left side with ATM image - Hidden on mobile, visible on desktop */}
           <div className="relative w-full lg:w-2/5 h-32 sm:h-48 lg:h-full overflow-visible rounded-t-2xl lg:rounded-l-2xl lg:rounded-tr-none hidden sm:block">
