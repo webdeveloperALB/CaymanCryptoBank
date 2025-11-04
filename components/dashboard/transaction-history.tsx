@@ -265,7 +265,7 @@ export default function ClientDepositsView() {
                       </Badge>
                     </div>
 
-                    <div className="bg-[#0A7F8D] border border-[#0A7F8D] rounded-lg p-3">
+                    <div className="bg-[#364e72] border border-[#364e72] rounded-lg p-3">
                       <h4 className="font-semibold text-white mb-2 flex items-center text-sm">
                         <FileText className="w-4 h-4 mr-2" />
                         Transaction Details

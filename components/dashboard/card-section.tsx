@@ -313,7 +313,7 @@ export default function CardSection({ userProfile }: CardSectionProps) {
               <div className="flex gap-2">
                 <Button
                   onClick={createCard}
-                  className="bg-[#0A7F8D] hover:bg-[#0A7F8D]/90"
+                  className="bg-[#364e72] hover:bg-[#364e72]/90"
                 >
                   Create Card
                 </Button>

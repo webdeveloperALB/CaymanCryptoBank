@@ -378,7 +378,7 @@ export default function Profile({ userProfile }: ProfileProps) {
           <Button
             type="submit"
             disabled={isChangingPassword}
-            className="w-full bg-[#0A7F8D] hover:bg-[#0A7F8D]/90 text-white font-semibold py-3 rounded-lg transition-colors"
+            className="w-full bg-[#364e72] hover:bg-[#364e72]/90 text-white font-semibold py-3 rounded-lg transition-colors"
           >
             {isChangingPassword ? (
               <div className="flex items-center justify-center">

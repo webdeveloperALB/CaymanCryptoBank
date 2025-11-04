@@ -320,7 +320,7 @@ export default function LiveChatClient({
               </div>
               <Button
                 onClick={startChat}
-                className="w-full bg-[#0A7F8D] hover:bg-[#0A7F8D]/90"
+                className="w-full bg-[#364e72] hover:bg-[#364e72]/90"
                 disabled={!clientName.trim() || !clientEmail.trim()}
               >
                 Start Chat

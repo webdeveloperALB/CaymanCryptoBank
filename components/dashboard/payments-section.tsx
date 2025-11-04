@@ -185,7 +185,7 @@ export default function PaymentsSection({ userProfile }: PaymentsSectionProps) {
             >
               <CardContent className="p-4">
                 <div className="flex items-start gap-4">
-                  <type.icon className="w-6 h-6 text-[#0A7F8D] mt-1 flex-shrink-0" />
+                  <type.icon className="w-6 h-6 text-[#364e72] mt-1 flex-shrink-0" />
                   <div className="min-w-0">
                     <h3 className="font-medium">{type.name}</h3>
                     <p className="text-sm text-gray-600 line-clamp-2">
@@ -292,7 +292,7 @@ export default function PaymentsSection({ userProfile }: PaymentsSectionProps) {
               <div className="flex gap-2">
                 <Button
                   onClick={submitPayment}
-                  className="bg-[#0A7F8D] hover:bg-[#0A7F8D]/70"
+                  className="bg-[#364e72] hover:bg-[#364e72]/90"
                 >
                   Submit Payment
                 </Button>

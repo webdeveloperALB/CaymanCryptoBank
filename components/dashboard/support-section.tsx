@@ -210,7 +210,7 @@ export default function SupportSection({ userProfile }: SupportSectionProps) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card className="text-center hover:shadow-md transition-shadow">
             <CardContent className="p-6">
-              <Phone className="w-8 h-8 mx-auto mb-3 text-[#0A7F8D]" />
+              <Phone className="w-8 h-8 mx-auto mb-3 text-[#364e72]" />
               <h3 className="font-medium mb-2">Phone Support</h3>
               <p className="text-sm text-gray-600 mb-3">Available 24/7</p>
               <p className="font-mono text-sm">+1 (555) 123-4567</p>
@@ -228,7 +228,7 @@ export default function SupportSection({ userProfile }: SupportSectionProps) {
 
           <Card className="text-center hover:shadow-md transition-shadow">
             <CardContent className="p-6">
-              <Mail className="w-8 h-8 mx-auto mb-3 text-[#0A7F8D]" />
+              <Mail className="w-8 h-8 mx-auto mb-3 text-[#364e72]" />
               <h3 className="font-medium mb-2">Email Support</h3>
               <p className="text-sm text-gray-600 mb-3">Response within 24h</p>
               <p className="text-sm">support@digitalchainbank.com</p>
@@ -249,12 +249,12 @@ export default function SupportSection({ userProfile }: SupportSectionProps) {
 
           <Card className="text-center hover:shadow-md transition-shadow">
             <CardContent className="p-6">
-              <MessageCircle className="w-8 h-8 mx-auto mb-3 text-[#0A7F8D]" />
+              <MessageCircle className="w-8 h-8 mx-auto mb-3 text-[#364e72]" />
               <h3 className="font-medium mb-2">Live Chat</h3>
               <p className="text-sm text-gray-600 mb-3">Mon-Fri 9AM-6PM</p>
               <Button
                 size="sm"
-                className="bg-[#0A7F8D] hover:bg-[#0A7F8D]/90 mt-3"
+                className="bg-[#364e72] hover:bg-[#364e72]/90 mt-3"
                 onClick={() => startLiveChat()}
               >
                 Start Chat

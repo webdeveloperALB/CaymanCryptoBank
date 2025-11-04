@@ -208,14 +208,6 @@ export default function MessageSection({ userProfile }: MessageSectionProps) {
                         Mark as Read
                       </Button>
                     )}
-                    {message.message_type === "alert" && (
-                      <Button
-                        size="sm"
-                        className="bg-[#F26623] hover:bg-[#E55A1F]"
-                      >
-                        Take Action
-                      </Button>
-                    )}
                   </div>
 
                   <div className="text-xs text-gray-500 border-t pt-2">

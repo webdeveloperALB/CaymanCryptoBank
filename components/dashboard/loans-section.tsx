@@ -214,7 +214,7 @@ export default function LoansSection({}: LoansSectionProps) {
   const renderStep1 = () => (
     <div className="space-y-6">
       <div className="text-center mb-8">
-        <FileSignature className="h-12 w-12 text-[#0A7F8D] mx-auto mb-4" />
+        <FileSignature className="h-12 w-12 text-[#364e72] mx-auto mb-4" />
         <h3 className="text-xl font-semibold text-gray-900">Loan Details</h3>
       </div>
 
@@ -633,7 +633,7 @@ export default function LoansSection({}: LoansSectionProps) {
                 <div
                   className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium ${
                     step <= currentStep
-                      ? "bg-[#0A7F8D] text-white"
+                      ? "bg-[#364e72] text-white"
                       : "bg-gray-200 text-gray-600"
                   }`}
                 >
@@ -646,7 +646,7 @@ export default function LoansSection({}: LoansSectionProps) {
                 {step < totalSteps && (
                   <div
                     className={`w-8 sm:w-16 h-1 mx-1 sm:mx-2 ${
-                      step < currentStep ? "bg-[#0A7F8D]" : "bg-gray-200"
+                      step < currentStep ? "bg-[#364e72]" : "bg-gray-200"
                     }`}
                   />
                 )}
@@ -665,7 +665,7 @@ export default function LoansSection({}: LoansSectionProps) {
           <CardHeader className="bg-[#F5F0F0] border-b p-6">
             <CardTitle className="flex items-center text-lg">
               Lithuanian Crypto Central Bank Loan Application
-              <Badge className="ml-2 bg-[#0A7F8D] text-white">Secure</Badge>
+              <Badge className="ml-2 bg-[#364e72] text-white">Secure</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6">
@@ -685,7 +685,7 @@ export default function LoansSection({}: LoansSectionProps) {
               {currentStep < totalSteps ? (
                 <Button
                   onClick={handleNext}
-                  className="bg-[#0A7F8D] hover:bg-[#0A7F8D]/90 text-white order-1 sm:order-2"
+                  className="bg-[#364e72] hover:bg-[#364e72]/90 text-white order-1 sm:order-2"
                 >
                   Next Step
                 </Button>
@@ -693,7 +693,7 @@ export default function LoansSection({}: LoansSectionProps) {
                 <Button
                   onClick={handleSubmit}
                   disabled={isSubmitting}
-                  className="bg-[#0A7F8D] hover:bg-[#0A7F8D]/90 text-white order-1 sm:order-2"
+                  className="bg-[#364e72] hover:bg-[#364e72]/90 text-white order-1 sm:order-2"
                 >
                   {isSubmitting ? "Processing..." : "Submit Application"}
                 </Button>
@@ -706,7 +706,7 @@ export default function LoansSection({}: LoansSectionProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-6 sm:mt-8">
           <Card>
             <CardContent className="p-4 sm:p-6 text-center">
-              <CheckCircle className="h-10 w-10 sm:h-12 sm:w-12 text-[#0A7F8D] mx-auto mb-3 sm:mb-4" />
+              <CheckCircle className="h-10 w-10 sm:h-12 sm:w-12 text-[#364e72] mx-auto mb-3 sm:mb-4" />
               <h3 className="font-semibold text-gray-900 mb-2">
                 Quick Approval
               </h3>
@@ -719,7 +719,7 @@ export default function LoansSection({}: LoansSectionProps) {
 
           <Card>
             <CardContent className="p-4 sm:p-6 text-center">
-              <CreditCard className="h-10 w-10 sm:h-12 sm:w-12 text-[#0A7F8D] mx-auto mb-3 sm:mb-4" />
+              <CreditCard className="h-10 w-10 sm:h-12 sm:w-12 text-[#364e72] mx-auto mb-3 sm:mb-4" />
               <h3 className="font-semibold text-gray-900 mb-2">
                 Competitive Rates
               </h3>
@@ -731,7 +731,7 @@ export default function LoansSection({}: LoansSectionProps) {
 
           <Card>
             <CardContent className="p-4 sm:p-6 text-center">
-              <Info className="h-10 w-10 sm:h-12 sm:w-12 text-[#0A7F8D] mx-auto mb-3 sm:mb-4" />
+              <Info className="h-10 w-10 sm:h-12 sm:w-12 text-[#364e72] mx-auto mb-3 sm:mb-4" />
               <h3 className="font-semibold text-gray-900 mb-2">
                 No Hidden Fees
               </h3>

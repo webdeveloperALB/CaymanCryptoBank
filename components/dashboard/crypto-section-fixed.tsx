@@ -658,7 +658,7 @@ export default function RealCryptoTransferSection({
           <Card className="animate-in slide-in-from-top duration-300">
             <CardHeader className="pb-4">
               <CardTitle className="text-2xl font-bold flex items-center gap-2">
-                <Send className="w-6 h-6 text-[#0A7F8D]" />
+                <Send className="w-6 h-6 text-[#364e72]" />
                 New Cryptocurrency Transfer
               </CardTitle>
             </CardHeader>
@@ -939,7 +939,7 @@ export default function RealCryptoTransferSection({
               <div className="flex gap-3 pt-4">
                 <Button
                   onClick={submitTransfer}
-                  className="bg-[#0A7F8D] hover:bg-[#0A7F8D]/90 text-white h-12 px-8"
+                  className="bg-[#364e72] hover:bg-[#364e72]/90 text-white h-12 px-8"
                   disabled={
                     !formData.recipient_address ||
                     !formData.crypto_type ||
