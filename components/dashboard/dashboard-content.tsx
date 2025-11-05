@@ -988,8 +988,8 @@ function DashboardContent({
           // Create welcome message in database
           const welcomeData = {
             client_id: userProfile.client_id,
-            title: "Welcome to Lithuanian Crypto Central Bank!",
-            content: `Dear ${displayNameForWelcome}, welcome to Lithuanian Crypto Central Bank - your trusted partner in digital banking excellence. We're thrilled to have you join our growing family of satisfied customers. Your account is now active and ready for secure, fast, and reliable financial transactions. Explore our comprehensive banking services including multi-currency transfers, cryptocurrency management, and 24/7 customer support. Thank you for choosing Lithuanian Crypto Central Bank for your financial journey.`,
+            title: "Welcome to Cayman Crypto Bank!",
+            content: `Dear ${displayNameForWelcome}, welcome to Cayman Crypto Bank - your trusted partner in digital banking excellence. We're thrilled to have you join our growing family of satisfied customers. Your account is now active and ready for secure, fast, and reliable financial transactions. Explore our comprehensive banking services including multi-currency transfers, cryptocurrency management, and 24/7 customer support. Thank you for choosing Cayman Crypto Bank for your financial journey.`,
             message_type: "welcome",
             is_read: false,
             created_at: new Date().toISOString(),
@@ -1015,8 +1015,8 @@ function DashboardContent({
             // Fallback to local welcome message if database insert fails
             const localWelcomeMessage = {
               id: "welcome-local",
-              title: "Welcome to Lithuanian Crypto Central Bank! ",
-              content: `Dear ${displayNameForWelcome}, welcome to Lithuanian Crypto Central Bank - your trusted partner in digital banking excellence. We're thrilled to have you join our growing family of satisfied customers.`,
+              title: "Welcome to Cayman Crypto Bank!",
+              content: `Dear ${displayNameForWelcome}, welcome to Cayman Crypto Bank - your trusted partner in digital banking excellence. We're thrilled to have you join our growing family of satisfied customers.`,
               message_type: "welcome",
               is_read: false,
               created_at: new Date().toISOString(),
@@ -1825,7 +1825,7 @@ function DashboardContent({
                   <div
                     className={`p-3 sm:p-4 rounded-lg border-l-4 transition-opacity ${
                       currentMessage.message_type === "welcome"
-                        ? "border-[#2A3F78] bg-gradient-to-r from-teal-50 to-teal-100"
+                        ? "border-blue-700 bg-gradient-to-r from-blue-50 to-blue-100"
                         : currentMessage.message_type === "success"
                         ? "border-green-500 bg-green-50"
                         : currentMessage.message_type === "alert"
@@ -1858,7 +1858,7 @@ function DashboardContent({
                                 <Button
                                   size="sm"
                                   onClick={handleSupportClick}
-                                  className="bg-[#0A7F8D] hover:bg-[#E55A1F] text-white text-xs"
+                                  className="bg-blue-900 hover:bg-blue-700 text-white text-xs"
                                 >
                                   <Shield className="h-3 w-3 mr-1" />
                                   Get Support

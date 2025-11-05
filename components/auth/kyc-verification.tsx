@@ -313,7 +313,7 @@ export default function KYCVerification({
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <Card className="shadow-lg max-w-md w-full">
           <CardContent className="flex flex-col items-center justify-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0A7F8D] mb-4"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-4"></div>
             <p className="text-gray-600">Checking KYC status...</p>
           </CardContent>
         </Card>
