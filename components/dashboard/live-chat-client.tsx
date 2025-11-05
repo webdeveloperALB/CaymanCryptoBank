@@ -244,7 +244,7 @@ export default function LiveChatClient({
         <div className="p-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center text-xs font-medium">
-              <MessageCircle className="w-3.5 h-3.5 mr-1.5 text-[#0A7F8D]" />
+              <MessageCircle className="w-3.5 h-3.5 mr-1.5 text-blue-700" />
               Live Chat
             </div>
             <div className="flex items-center space-x-0.5">
@@ -277,7 +277,7 @@ export default function LiveChatClient({
         <DialogHeader className="p-4 pb-2 flex-shrink-0">
           <div className="flex items-center justify-between">
             <DialogTitle className="flex items-center text-base">
-              <MessageCircle className="w-5 h-5 mr-2 text-[#0A7F8D]" />
+              <MessageCircle className="w-5 h-5 mr-2 text-blue-700" />
               Live Chat Support
             </DialogTitle>
             <div className="flex items-center space-x-1">
