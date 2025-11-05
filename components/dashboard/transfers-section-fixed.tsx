@@ -574,7 +574,7 @@ export default function TransfersSection({
   if (loading) {
     return (
       <div className="p-8 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0A7F8D]"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
         <span className="ml-3 text-slate-600">Loading transfers...</span>
       </div>
     );
@@ -1329,7 +1329,7 @@ export default function TransfersSection({
                         {transfer.transfer_type === "bank_transfer" &&
                           transfer.status === "Pending" && (
                             <div className="mt-2 text-xs text-amber-600 bg-amber-50 p-2 rounded">
-                              Bank transfer pending admin approval
+                              Bank transfer pending approval
                             </div>
                           )}
                       </div>
