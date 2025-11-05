@@ -1412,7 +1412,7 @@ function DashboardContent({
   const activitiesDisplay = useMemo(() => {
     const displayActivities = showAllActivities
       ? deferredActivities
-      : deferredActivities.slice(0, 3);
+      : deferredActivities.slice(0, 1);
 
     return displayActivities.map((activity) => {
       const isExpanded = expandedActivities.has(activity.id);
