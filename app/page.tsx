@@ -350,7 +350,7 @@ export default function Page() {
   console.groupEnd();
 
   const LoadingScreen = ({ message }: { message: string }) => (
-    <div className="min-h-screen flex flex-col items-center justify-center space-y-4 bg-gradient-to-br from-orange-50 to-orange-100">
+    <div className="min-h-screen flex flex-col items-center justify-center space-y-4">
       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0A7F8D]"></div>
       <p className="text-gray-600 text-lg text-center">{message}</p>
       {error && (
